@@ -42,7 +42,7 @@
 - solution: **builders** 
 - eg.
     ```java
-    public class NutritionFacts {
+    public class ClassTobeBuilt {
         private final int required1;
         private final int required2;
         //optional parameters
@@ -67,11 +67,11 @@
             }
             ...
 
-            public NutritionFacts build() {
-                return new NutritionFacts(this);
+            public ClassTobeBuilt build() {
+                return new ClassTobeBuilt(this);
             }
 
-            private NutritionFacts(Builder builder) {
+            private ClassTobeBuilt(Builder builder) {
                 required1 = builder.required1;
                 required2 = builder.required2;
                 optional1 = builder.required1;
@@ -94,8 +94,57 @@
 ---
 
 ## Item 3: Enforce the singleton property with a private constructor or an enum type
+- three ways to create singleton
+  - public final field
+    - API makes it clear it is a singleton
+    - Is simpler than factory method
+    ```java
+    public class OnlyOne {
+        public static final OnlyOne INSTANCE = new OnlyOne();
+        private OnlyOne() {
+            //can throw exception to ensure it is not called
+    }
+    ```
+  - static factory method
+    - flexibility to not be singleton
+    - can be used as a supplier
+    ```java
+    public class OnlyOne {
+    private static final OnlyOne INSTANCE = new OnlyOne();
+    private OnlyOne() {
+        //can throw exception to ensure it is not called
+    }
+    public static OnlyOne getInstance() {
+        return INSTANCE;
+    }
+    ```
+  - **single-element enum**
+    - the simplest
+    - free serialization
+    - 100% guarantee no unwanted instatiations
+  ```java
+  public enum OnlyOne {
+      INSTANCE;
+  }
+  ```
+### Disadvatages:
+- **it is difficult to test singleton class clients**
+- **sometimes consider as antipattern**
 
+---
 
-
+## Item 4: Enforce nonistantiability with a private constructor
+- for utility classes, singletons, classes using factory methods etc.
+- for suprassing the default no args constructor
+- could throw exception in private constructor to ensure it is not used
+- prevent class from being subclassed (subclasses need to be able to invoke superclass constructor)
+- eg
+  ```java
+  public class WithNoPublicConstructor {
+      private WithNoPublicConstructor() {
+          throw new AssertionError("The constructor should not be used");
+      }
+  }
+  ```
 
 
