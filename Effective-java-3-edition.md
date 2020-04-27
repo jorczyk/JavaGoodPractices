@@ -102,7 +102,7 @@
     public class OnlyOne {
         public static final OnlyOne INSTANCE = new OnlyOne();
         private OnlyOne() {
-            //can throw exception to ensure it is not called
+            throw new AssertionError("The constructor should not be used");
     }
     ```
   - static factory method
@@ -112,7 +112,7 @@
     public class OnlyOne {
     private static final OnlyOne INSTANCE = new OnlyOne();
     private OnlyOne() {
-        //can throw exception to ensure it is not called
+        throw new AssertionError("The constructor should not be used");
     }
     public static OnlyOne getInstance() {
         return INSTANCE;
@@ -138,13 +138,39 @@
 - for suprassing the default no args constructor
 - could throw exception in private constructor to ensure it is not used
 - prevent class from being subclassed (subclasses need to be able to invoke superclass constructor)
-- eg
+- eg.
   ```java
   public class WithNoPublicConstructor {
+      //should add commet why we create private constructor
       private WithNoPublicConstructor() {
           throw new AssertionError("The constructor should not be used");
       }
   }
   ```
+### Advantages:
+- **prevents the nonsense of creating the instance of utility class**
 
+---
 
+## Item 5: Prefer dependency injection to hardwiring resources
+- problem: many classes depend on many underlying resources
+- static utility classes and singletons are not a valid  choice for class parameterized by underlying resource
+- solution: pass the resource/factory (inject) into the constructor when creating a new instance
+- applied by frameworks like Spring, Dagger or Guice
+- eg.
+  ```java
+  public class SepllChecker {
+      private final Lexicon dictionary; //a dependency
+
+      public SpellChecker(Lexicon dictionary) {
+          this.dictionary = Objects.requireNonNull(dictionary);
+      }
+  }
+  ```
+
+### Advantages:
+- **improves flexibility, reusability and testability**
+
+---
+
+## Item 6: Avoid creating unnecessary objects
