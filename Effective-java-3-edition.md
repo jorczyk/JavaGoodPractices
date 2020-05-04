@@ -159,7 +159,7 @@
 - applied by frameworks like Spring, Dagger or Guice
 - eg.
   ```java
-  public class SepllChecker {
+  public class SpellChecker {
       private final Lexicon dictionary; //a dependency
 
       public SpellChecker(Lexicon dictionary) {
@@ -174,3 +174,34 @@
 ---
 
 ## Item 6: Avoid creating unnecessary objects
+- **reuse a single object instead of creating a new instance**
+- can be obtained by using static factory methods on immutable classes
+  (eg. use `Boolean.valueOf(String)` instead of `new Boolean(String)`) - constructor <u>must</u> create new object
+  - in other cases try to cache results
+  - eg.
+    ```java
+    public class WithPatternMatching {
+        //avoids compiling regex each time it is used and improving performance
+        /*lazy initialization is tempting, but it is not reccomended as it greatly
+        complicates the implementation with no mesurable performance improvement*/
+        private static final Pattern PATTERN = Pattern.compile("regex");
+        static boolean isMatchingThePattern(String s) {
+            return PATTERN.matcher(s).matches();
+        }
+    }
+    ```
+- other case is adapter classes (views). They also do not have state on they own - eq. `keySet()` from `Map` interface
+- **avoid unnecessary autoboxing**
+- in most cases **avoid maitaining your own object pool** (the special case is database connection. It is extremely heavyweight obcjet and it is wise to have a obcjet pool in that case)
+
+### Advantages:
+- could lead to cleaner code
+- **could improve performance**
+
+### Disadvatages:
+- **should be use wisely, as when it is misused then it could lead to hideous errors**
+- could make making *defensive copy* a harder task
+
+---
+
+## Item 7: Eliminate obsolete obcjet references
