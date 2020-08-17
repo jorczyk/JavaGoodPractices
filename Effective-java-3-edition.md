@@ -141,7 +141,7 @@
 - eg.
   ```java
   public class WithNoPublicConstructor {
-      //should add commet why we create private constructor
+      //created to hide implicit public constructor
       private WithNoPublicConstructor() {
           throw new AssertionError("The constructor should not be used");
       }
